@@ -25,7 +25,7 @@ public class TimeController {
             .map(data -> ServerSentEvent.<String>builder()
                 .event("time")
                 .id(data.toString())
-                .data(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .data(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build());
     }
 }
