@@ -21,7 +21,7 @@ public class TimeController {
 
     @GetMapping("/time")
     public Flux<ServerSentEvent<String>> getTime() {
-        return Flux.interval(Duration.ofSeconds(5))
+        return Flux.interval(Duration.ofSeconds(1))
             .map(data -> ServerSentEvent.<String>builder()
                 .event("time")
                 .id(data.toString())
