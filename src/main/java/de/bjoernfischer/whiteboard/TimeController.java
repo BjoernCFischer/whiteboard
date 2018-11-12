@@ -1,5 +1,6 @@
 package de.bjoernfischer.whiteboard;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ public class TimeController {
         return Mono.just("Hello World!");
     }
 
-    @GetMapping("/time")
+    @GetMapping(path = "/time", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> getTime(ServerHttpResponse response) {
         response.getHeaders().add("Access-Control-Allow-Origin", "*");
         return Flux.interval(Duration.ofSeconds(5))
