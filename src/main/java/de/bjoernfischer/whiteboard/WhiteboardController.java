@@ -42,7 +42,7 @@ public class WhiteboardController {
             .map(data -> ServerSentEvent.<String>builder()
                 .event("message")
                 .id(data.toString())
-                .data(loremIpsum.getWords(rand.nextInt(50), rand.nextInt(200)))
+                .data(loremIpsum.getWords(rand.nextInt(50), rand.nextInt(50)))
                 .build());
     }
 }
