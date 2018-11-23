@@ -27,6 +27,6 @@ public class HelloWorldController {
     public Flux<String> helloGoF() {
         return Flux
             .just("Erich Gamma", "Richard Helm", "Ralph Johnson", "John Vlissides")
-            .map(guy -> String.format("Hello %s!\n", guy));
+            .map(guy -> String.format("Hello %s!<br>", guy));
     }
 }
