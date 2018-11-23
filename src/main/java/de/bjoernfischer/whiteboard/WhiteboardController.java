@@ -19,11 +19,6 @@ public class WhiteboardController {
     private Random rand = new Random();
     private LoremIpsum loremIpsum = new LoremIpsum();
 
-    @GetMapping("/")
-    public Mono<String> root() {
-        return Mono.just("Hello World!");
-    }
-
     @GetMapping(path = "/time", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> getTime(ServerHttpResponse response) {
         response.getHeaders().add("Access-Control-Allow-Origin", "*");

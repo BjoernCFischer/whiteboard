@@ -8,13 +8,13 @@ import reactor.core.publisher.Mono;
 @RestController("/hello")
 public class HelloWorldController {
 
-    @GetMapping("/")
+    @GetMapping()
     public Mono<String> helloWorld() {
         return Mono.just("Hello World!");
     }
 
     @GetMapping("/{name}")
     public Mono<String> helloSomeone(@PathVariable String name) {
-        return Mono.just("Hello World!");
+        return Mono.just(String.format("Hello %s!", name));
     }
 }
