@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController()
@@ -18,5 +19,10 @@ public class HelloWorldController {
     @GetMapping("/{name}")
     public Mono<String> helloSomeone(@PathVariable String name) {
         return Mono.just(String.format("Hello %s!", name));
+    }
+
+    @GetMapping("/gangoffour")
+    public Flux<String> helloGoF() {
+        return Flux.just("Hello Erich Gamma!\n", "Hello Richard Helm!\n", "Hello Ralph Johnson!\n", "Hello John Vlissides!\n");
     }
 }
