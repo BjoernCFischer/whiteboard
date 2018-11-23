@@ -6,10 +6,7 @@
 	<groupId>de.bjoernfischer</groupId>
 	<artifactId>whiteboard</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-    <modules>
-        <module>witeboard-db</module>
-    </modules>
-    <packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 	<name>Whiteboard</name>
 	<description>Simple reactive whiteboard app</description>
@@ -24,7 +21,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencies>
@@ -52,23 +49,10 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>de.bjoernfischer</groupId>-->
-            <!--<artifactId>witeboard-db</artifactId>-->
-            <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
 	</dependencies>
 
 	<build>
 		<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <release>11</release>
-                </configuration>
-            </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
