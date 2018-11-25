@@ -1,0 +1,11 @@
+spring:
+  data:
+    redis:
+      repositories:
+        enabled: true
+  redis:
+    database: 0
+    timeout: 2000ms
+    password: 'a87e88801f8a71ef04440eee4a4f5797'
+    host: spinyfin.redistogo.com
+    port: 11094

@@ -1,4 +1,4 @@
-package de.bjoernfischer.whiteboard;/* Copyright (c) 2008 Sven Jacobs
+package de.bjoernfischer.whiteboard.helper;/* Copyright (c) 2008 Sven Jacobs
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
