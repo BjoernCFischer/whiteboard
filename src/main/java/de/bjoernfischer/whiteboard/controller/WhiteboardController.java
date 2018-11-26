@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,6 +76,12 @@ public class WhiteboardController {
             .flatMap(whiteboardMessage -> whiteboardOps.opsForValue().set(whiteboardMessage.getId(), whiteboardMessage))
             .subscribe(System.out::println);
 
+        return ok().build();
+    }
+
+    @DeleteMapping("/clearmessages")
+    public Mono<ServerResponse> clearMessages() {
+        // FIXME
         return ok().build();
     }
 }
