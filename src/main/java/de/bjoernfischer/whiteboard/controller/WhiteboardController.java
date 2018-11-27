@@ -1,9 +1,12 @@
 package de.bjoernfischer.whiteboard.controller;
 
 import de.bjoernfischer.whiteboard.model.WhiteboardMessage;
-import org.springframework.data.redis.core.ReactiveRedisOperations;
+import de.bjoernfischer.whiteboard.repository.WhiteboardMessageRepository;
+import org.springframework.data.mongodb.core.CollectionOptions;
+import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,15 +24,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
 @RestController
 public class WhiteboardController {
 
-    private final ReactiveRedisOperations<String, WhiteboardMessage> whiteboardOps;
+    private final WhiteboardMessageRepository repository;
+    private final ReactiveMongoOperations operations;
 
-    WhiteboardController(ReactiveRedisOperations<String, WhiteboardMessage> whiteboardOps) {
-        this.whiteboardOps = whiteboardOps;
+    WhiteboardController(WhiteboardMessageRepository repository, ReactiveMongoOperations operations) {
+        this.repository = repository;
+        this.operations = operations;
     }
 
     @GetMapping
@@ -51,37 +53,34 @@ public class WhiteboardController {
 
     @GetMapping("/messagesnosse")
     public Flux<WhiteboardMessage> getMessagesNoSSE() {
-        return whiteboardOps.keys("*").flatMap(whiteboardOps.opsForValue()::get);
+        return repository.findAll();
     }
 
     @GetMapping(path = "/messages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> getMessages(ServerHttpResponse response) {
-        response.getHeaders().add("Access-Control-Allow-Origin", "*");
-        Flux<Long> interval = Flux.interval(Duration.ofSeconds(1));
-        Flux<WhiteboardMessage> whiteboardMessageFlux = whiteboardOps.keys("*").flatMap(whiteboardOps.opsForValue()::get);
-
-        return Flux.zip(interval, whiteboardMessageFlux, (t, m) -> ServerSentEvent.<String>builder()
-            .event("message")
-            .id(m.getId())
-            .data(String.format("%s: %s", m.getTimestamp(), m.getMessage()))
-            .build()
-        );
+        return repository.findByTimestampGreaterThan(new Date())
+            .map(m  -> ServerSentEvent.<String>builder()
+                .event("message")
+                .id(m.getId())
+                .data(String.format("%s: %s", m.getTimestamp(), m.getMessage()))
+                .build()
+            );
     }
 
     @PostMapping("/addmessage")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<ServerResponse> addMessage(@RequestBody String string) {
-        Mono.just(string)
+    public Mono<WhiteboardMessage> addMessage(@RequestBody String string) {
+        return Mono.just(string)
             .map(message -> new WhiteboardMessage(UUID.randomUUID().toString(), message, new Date()))
-            .flatMap(whiteboardMessage -> whiteboardOps.opsForValue().set(whiteboardMessage.getId(), whiteboardMessage))
-            .subscribe(System.out::println);
-
-        return ok().build();
+            .flatMap(repository::save);
     }
 
     @DeleteMapping("/clearmessages")
-    public Mono<ServerResponse> clearMessages() {
-        // FIXME
-        return ok().build();
+    public Mono<ResponseEntity<Void>> clearMessages() {
+        return operations.collectionExists(WhiteboardMessage.class)
+            .flatMap(exists -> exists ? operations.dropCollection(WhiteboardMessage.class) : Mono.just(exists))
+            .flatMap(o -> operations.createCollection(WhiteboardMessage.class, CollectionOptions.empty().capped().size(1024 * 1024)))
+            .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK)))
+            .defaultIfEmpty(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
