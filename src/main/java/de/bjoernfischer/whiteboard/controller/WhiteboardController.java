@@ -59,7 +59,7 @@ public class WhiteboardController {
     @GetMapping(path = "/messages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> getMessages(ServerHttpResponse response) {
         return repository.findByTimestampGreaterThan(new Date())
-            .map(m  -> ServerSentEvent.<String>builder()
+            .map(m -> ServerSentEvent.<String>builder()
                 .event("message")
                 .id(m.getId())
                 .data(String.format("%s: %s", m.getTimestamp(), m.getMessage()))
@@ -80,6 +80,9 @@ public class WhiteboardController {
         return operations.collectionExists(WhiteboardMessage.class)
             .flatMap(exists -> exists ? operations.dropCollection(WhiteboardMessage.class) : Mono.just(exists))
             .flatMap(o -> operations.createCollection(WhiteboardMessage.class, CollectionOptions.empty().capped().size(1024 * 1024)))
+            .then(Mono.just("Neues Whiteboard ist eröffnet!")
+                .map(message -> new WhiteboardMessage(UUID.randomUUID().toString(), message, new Date()))
+                .flatMap(repository::save))
             .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK)))
             .defaultIfEmpty(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }

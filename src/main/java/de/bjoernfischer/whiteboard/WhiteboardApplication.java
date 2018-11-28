@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories
 public class WhiteboardApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WhiteboardApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(WhiteboardApplication.class, args);
+    }
 }
