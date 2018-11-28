@@ -88,8 +88,7 @@ public class WhiteboardController {
     @DeleteMapping("/clearmessages")
     public Mono<ResponseEntity<Void>> clearMessages() {
         return operations.collectionExists(WhiteboardMessage.class)
-            .flatMap(exists -> exists ? operations.dropCollection(WhiteboardMessage.class) : Mono.just(exists))
-            .flatMap(o -> operations.createCollection(WhiteboardMessage.class, CollectionOptions.empty().capped().size(1024 * 1024)))
+            .flatMap(exists -> exists ? repository.deleteAll() : Mono.just(exists))
             .then(Mono.just("Neues Whiteboard ist eröffnet!")
                 .map(message -> new WhiteboardMessage(UUID.randomUUID().toString(), message, new Date()))
                 .flatMap(repository::save))
