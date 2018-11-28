@@ -35,7 +35,7 @@ public class WhiteboardController {
         this.operations = operations;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public Mono<String> index() {
         return Mono.just("This is the index page of the Whiteboard42 app. If you lost your watch, try the endpoint /time.");
     }
