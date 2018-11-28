@@ -27,6 +27,8 @@ import java.util.UUID;
 @RestController
 public class WhiteboardController {
 
+    private static final int HEARTBEAT_INTERVAL = 10;
+
     private final WhiteboardMessageRepository repository;
     private final ReactiveMongoOperations operations;
 
@@ -58,7 +60,7 @@ public class WhiteboardController {
 
     @GetMapping(path = "/messages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> getMessages(ServerHttpResponse response) {
-        Flux<ServerSentEvent<String>> heartbeat = Flux.interval(Duration.ofSeconds(30))
+        Flux<ServerSentEvent<String>> heartbeat = Flux.interval(Duration.ofSeconds(HEARTBEAT_INTERVAL))
             .map(t -> ServerSentEvent.<String>builder()
                 .event("heartbeat")
                 .id(String.valueOf(t))
@@ -70,7 +72,7 @@ public class WhiteboardController {
             .map(m -> ServerSentEvent.<String>builder()
                 .event("message")
                 .id(m.getId())
-                .data(String.format("%s: %s", m.getTimestamp(), m.getMessage()))
+                .data(m.getMessage())
                 .build()
             );
 
