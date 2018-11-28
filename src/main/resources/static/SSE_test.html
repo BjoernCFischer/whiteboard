@@ -1,0 +1,59 @@
+<html>
+<head>
+   <meta charset="UTF-8">
+   <title>Server-sent events demo</title>
+</head>
+<body>
+  <button>Close the connection</button>
+
+  <ul>
+  </ul>
+
+<script>
+  var eventList = document.querySelector('ul');
+  
+  var addElement = function(text) {
+	var newElement = document.createElement("li");
+    newElement.textContent = text;
+    eventList.appendChild(newElement);
+  };
+
+  var timeSource = new EventSource('https://whiteboard42.herokuapp.com/time');
+  timeSource.onopen = function() {
+    console.log("Connection to time server opened.");
+	addElement("Connection to server opened.");
+  };  
+  timeSource.onerror = function() {
+    console.log("timeSource failed.");
+  };
+  timeSource.addEventListener("time", function(e) {
+    addElement("time: " + e.data);
+  });
+  
+  //console.log(timeSource.withCredentials);
+  //console.log(timeSource.readyState);
+  //console.log(timeSource.url);
+  
+  var messageSource = new EventSource('https://whiteboard42.herokuapp.com/messages');
+  messageSource.onopen = function() {
+    console.log("Connection to time server opened.");
+	addElement("Connection to server opened.");
+  };  
+  messageSource.onerror = function() {
+    console.log("messageSource failed.");
+  };
+  messageSource.onmessage = function(e) {
+    addElement("message: " + e.data);
+  };
+
+  var button = document.querySelector('button');
+  button.onclick = function() {
+    timeSource.close();
+	messageSource.close();
+	
+	addElement("All connections closed.");
+  };
+
+</script>
+</body>
+</html>

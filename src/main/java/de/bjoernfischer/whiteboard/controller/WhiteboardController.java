@@ -58,13 +58,23 @@ public class WhiteboardController {
 
     @GetMapping(path = "/messages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> getMessages(ServerHttpResponse response) {
-        return repository.findByTimestampGreaterThan(new Date())
+        Flux<ServerSentEvent<String>> heartbeat = Flux.interval(Duration.ofSeconds(30))
+            .map(t -> ServerSentEvent.<String>builder()
+                .event("heartbeat")
+                .id(String.valueOf(t))
+                .data(String.format("Heartbeat number %d", t))
+                .build()
+            );
+
+        Flux<ServerSentEvent<String>> data = repository.findByTimestampGreaterThan(new Date())
             .map(m -> ServerSentEvent.<String>builder()
                 .event("message")
                 .id(m.getId())
                 .data(String.format("%s: %s", m.getTimestamp(), m.getMessage()))
                 .build()
             );
+
+        return Flux.merge(heartbeat, data);
     }
 
     @PostMapping("/addmessage")
