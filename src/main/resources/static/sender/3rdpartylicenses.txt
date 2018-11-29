@@ -271,7 +271,7 @@ MIT
 @angular/common
 MIT
 
-@angular/platform-browser
+@angular/animations
 MIT
 
 @angular/cdk
@@ -324,17 +324,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
+@angular/platform-browser
+MIT
+
+@angular/material/button
+
+@angular/material/snack-bar
+
 @angular/material/toolbar
 
 @angular/forms
 MIT
 
-@angular/animations
-MIT
-
 @angular/material/form-field
-
-@angular/material/button
 
 zone.js
 MIT
