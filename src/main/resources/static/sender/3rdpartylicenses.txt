@@ -326,13 +326,13 @@ THE SOFTWARE.
 
 @angular/material/toolbar
 
+@angular/forms
+MIT
+
 @angular/animations
 MIT
 
 @angular/material/form-field
-
-@angular/forms
-MIT
 
 @angular/material/button
 
