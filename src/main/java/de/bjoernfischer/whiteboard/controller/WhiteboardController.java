@@ -59,7 +59,7 @@ public class WhiteboardController {
     }
 
     @GetMapping(path = "/messages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ServerSentEvent<String>> getMessages(ServerHttpResponse response) {
+    public Flux<ServerSentEvent<String>> getMessages() {
         Flux<ServerSentEvent<String>> heartbeat = Flux.interval(Duration.ofSeconds(HEARTBEAT_INTERVAL))
             .map(t -> ServerSentEvent.<String>builder()
                 .event("heartbeat")
