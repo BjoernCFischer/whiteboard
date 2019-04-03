@@ -2,7 +2,6 @@ package de.bjoernfischer.whiteboard.controller;
 
 import de.bjoernfischer.whiteboard.model.WhiteboardMessage;
 import de.bjoernfischer.whiteboard.repository.WhiteboardMessageRepository;
-import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
